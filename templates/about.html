@@ -1,0 +1,161 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="about-container">
+  <!-- Overview Section -->
+  <div class="about-section">
+    <div class="about-card">
+      <div class="about-icon">
+        <i class="fas fa-newspaper"></i>
+      </div>
+      <h2>About TruthLens</h2>
+      <p>
+        TruthLens is an advanced AI-based web application designed to detect
+        whether a given news article is real or fake. It uses state-of-the-art
+        Natural Language Processing (NLP) and Machine Learning techniques to
+        analyze the credibility of online content.
+      </p>
+      <p>
+        By leveraging transformer-based deep learning models like RoBERTa, our
+        system identifies patterns, linguistic cues, and semantic meaning in
+        news text to make intelligent predictions with high accuracy.
+      </p>
+    </div>
+  </div>
+
+  <!-- Mission & Objective -->
+  <div class="about-grid">
+    <div class="about-card mission-card">
+      <div class="about-icon">
+        <i class="fas fa-bullseye"></i>
+      </div>
+      <h3>Our Mission</h3>
+      <p>
+        To combat the growing problem of fake news and misinformation across
+        digital media platforms by providing reliable, AI-powered verification
+        tools.
+      </p>
+    </div>
+
+    <div class="about-card objective-card">
+      <div class="about-icon">
+        <i class="fas fa-flag"></i>
+      </div>
+      <h3>Objective</h3>
+      <p>
+        Help users verify the authenticity of news articles before believing or
+        sharing them, promoting a more informed and responsible online
+        community.
+      </p>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <div class="about-section">
+    <div class="about-card">
+      <h2><i class="fas fa-cogs"></i> How It Works</h2>
+      <div class="process-steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Input News Text</h4>
+            <p>
+              User enters or pastes a news article or headline into the
+              application
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>AI Processing</h4>
+            <p>RoBERTa model analyzes the text using advanced NLP techniques</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Pattern Recognition</h4>
+            <p>Model identifies linguistic patterns and contextual features</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h4>Result Delivery</h4>
+            <p>System provides prediction (Real/Fake) with confidence score</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Features -->
+  <div class="about-section">
+    <div class="about-card">
+      <h2><i class="fas fa-star"></i> Key Features</h2>
+      <div class="features-grid">
+        <div class="feature-item">
+          <i class="fas fa-bolt"></i>
+          <h4>Real-time Analysis</h4>
+          <p>Instant detection of fake news with live processing</p>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-chart-bar"></i>
+          <h4>Confidence Scoring</h4>
+          <p>Percentage-based confidence level for each prediction</p>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-history"></i>
+          <h4>Analysis History</h4>
+          <p>Track and review all previous verifications</p>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-shield-alt"></i>
+          <h4>AI-Powered Accuracy</h4>
+          <p>State-of-the-art transformer models for reliable results</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Section (Restored) -->
+  <footer class="footer-section">
+    <div class="footer-container">
+      <!-- Left Section -->
+      <div class="footer-left">
+        <h2 class="footer-logo">
+          <i class="fas fa-shield-alt"></i> TruthLens
+        </h2>
+
+        <div class="footer-contact">
+          <p>
+            <i class="fas fa-map-marker-alt"></i> Chandigarh, Punjab, India
+          </p>
+          <p><i class="fas fa-phone"></i> +91 8960717110</p>
+          <p><i class="fas fa-envelope"></i> support@truthlens.ai</p>
+        </div>
+      </div>
+
+      <!-- Right Section -->
+      <div class="footer-right">
+        <h3>About Application</h3>
+        <p>
+          TruthLens is an AI-powered fake news detection system developed by
+          <strong>Divyanshu Chauhan</strong>. It uses advanced NLP and deep
+          learning models to analyze the authenticity of digital news content
+          in real time.
+        </p>
+
+        <div class="footer-socials">
+          <a href="https://www.linkedin.com/in/%E2%97%8F-divyanshu-chauhan-4b6b9a2a2"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://github.com/divyanshu-chauhan-7786"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 TruthLens. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
+{% endblock %}

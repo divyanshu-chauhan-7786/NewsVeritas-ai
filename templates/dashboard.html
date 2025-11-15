@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Dashboard</h1>
+  <p>Overview of your fake news detection analytics.</p>
+</div>
+
+<!-- Stats Summary -->
+<div class="dashboard-grid">
+  <div class="stat-card blue">
+    <h2>{{ total_analyses }}</h2>
+    <p>Total Analyses</p>
+  </div>
+  <div class="stat-card red">
+    <h2>{{ fake_count }}</h2>
+    <p>Fake News Detected</p>
+  </div>
+  <div class="stat-card green">
+    <h2>{{ real_count }}</h2>
+    <p>Real News</p>
+  </div>
+  <div class="stat-card purple">
+    <h2>{{ avg_confidence }}%</h2>
+    <p>Avg Confidence</p>
+  </div>
+</div>
+
+<!-- Verdict Distribution Chart -->
+<div class="chart-section">
+  <h3>Verdict Distribution</h3>
+  <div class="bar-chart">
+    <div class="bar fake-bar" data-width="{{ fake_percentage }}">
+      {% if fake_percentage > 10 %}
+        Fake ({{ "%.1f"|format(fake_percentage) }}%)
+      {% endif %}
+    </div>
+    <div class="bar real-bar" data-width="{{ real_percentage }}">
+      {% if real_percentage > 10 %}
+        Real ({{ "%.1f"|format(real_percentage) }}%)
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Additional Insights -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+  
+  <div class="chart-section">
+    <h3>Recent Activity</h3>
+    <p style="color: #666; text-align: center; padding: 20px;">
+      {% if total_analyses > 0 %}
+        Last analysis: {{ history[-1].timestamp if history }}
+      {% else %}
+        No analyses yet
+      {% endif %}
+    </p>
+  </div>
+  
+  <div class="chart-section">
+    <h3>Accuracy Insights</h3>
+    <p style="color: #666; text-align: center; padding: 20px;">
+      {% if total_analyses > 0 %}
+        {{ "%.1f"|format((real_count / total_analyses * 100)) }}% of analyzed content appears authentic
+      {% else %}
+        Start analyzing to get insights
+      {% endif %}
+    </p>
+  </div>
+
+</div>
+
+<!-- Script to apply dynamic bar widths -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".bar").forEach(bar => {
+      const width = bar.getAttribute("data-width");
+      if (width) bar.style.width = width + "%";
+    });
+  });
+</script>
+
+{% endblock %}

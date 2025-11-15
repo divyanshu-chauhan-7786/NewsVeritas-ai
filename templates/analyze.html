@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Verify Information Authenticity</h1>
+  <p>Use advanced AI to analyze news articles and detect misinformation in real time.</p>
+</div>
+
+<div class="analyze-container">
+  <!-- LEFT SIDE: Form -->
+  <div class="analyze-form">
+    <form method="POST" action="{{ url_for('analyze') }}">
+      {% if error %}
+      <div class="error-message">
+        <i class="fas fa-exclamation-triangle"></i> {{ error }}
+      </div>
+      {% endif %}
+
+      <label>News Headline (Optional)</label>
+      <input
+        type="text"
+        name="headline"
+        placeholder="Enter the news headline..."
+        value="{{ headline or '' }}"
+      />
+
+      <label>Article Content *</label>
+      <textarea
+        name="news_text"
+        placeholder="Paste the full article text here..."
+        required
+      >{% if request.method == 'POST' %}{{ request.form.news_text }}{% endif %}</textarea>
+
+      <p class="note">Minimum 10 characters required for analysis.</p>
+
+      <button type="submit" class="analyze-btn">
+        <i class="fas fa-brain"></i> Analyze News
+      </button>
+    </form>
+  </div>
+
+  <!-- RIGHT SIDE: Result -->
+  <div class="analyze-result">
+    {% if prediction %}
+    <div class="result-card">
+      <!-- Confidence Level Badge -->
+      {% if confidence_level %}
+      <div class="confidence-level-badge" style="background: {{ confidence_level.color }}; color: #0c0c18;">
+        <i class="fas fa-chart-line"></i>
+        <span>{{ confidence_level.label }}</span>
+      </div>
+      {% endif %}
+
+      {% if prediction == 'FAKE' %}
+  
+      <h3>Fake News Detected</h3>
+      <p class="fake-message">{{ confidence_level.description if confidence_level else 'This content shows signs of misinformation' }}</p>
+      
+      {% if confidence_level and confidence_level.risk %}
+      <div class="risk-indicator">
+        <strong>Risk Level:</strong> {{ confidence_level.risk }}
+      </div>
+      {% endif %}
+
+      {% else %}
+      <h3>News Appears Authentic</h3>
+      <p class="real-message">{{ confidence_level.description if confidence_level else 'This content seems reliable' }}</p>
+      
+      {% if confidence_level and confidence_level.reliability %}
+      <div class="reliability-indicator">
+        <strong>Reliability:</strong> {{ confidence_level.reliability }}
+      </div>
+      {% endif %}
+      {% endif %}
+
+      <!-- Confidence Bar -->
+      <div class="confidence-section">
+        <div class="confidence-header">
+          <span>AI Confidence Score</span>
+          <span>{{ confidence }}%</span>
+        </div>
+        <div class="confidence-bar">
+          <div class="fill" data-width="{{ confidence }}" style="width: {{ confidence }}%; background: {{ confidence_level.color if confidence_level else '#3498db' }};">
+            {{ confidence }}%
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggestion Box -->
+      {% if confidence_level and confidence_level.suggestion %}
+      <div class="suggestion-box">
+        <i class="fas fa-lightbulb"></i>
+        <p>{{ confidence_level.suggestion }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Feedback System -->
+      <div class="feedback-section">
+        <h4>Help Improve the AI</h4>
+        <p>Was this analysis correct?</p>
+        
+        <div class="feedback-buttons">
+          <button type="button" class="feedback-btn correct-btn" onclick="provideFeedback('correct')">
+            <i class="fas fa-thumbs-up"></i> Correct
+          </button>
+          
+          <button type="button" class="feedback-btn incorrect-btn" onclick="showCorrectionOptions()">
+            <i class="fas fa-thumbs-down"></i> Incorrect
+          </button>
+        </div>
+
+        <!-- Correction Options (Hidden by default) -->
+        <div id="correctionOptions" class="correction-options" style="display: none;">
+          <p>What should the correct result be?</p>
+          <div class="correction-buttons">
+            <button type="button" onclick="provideFeedback('REAL')" class="correction-btn real-correction">
+              <i class="fas fa-check"></i> Should be REAL
+            </button>
+            <button type="button" onclick="provideFeedback('FAKE')" class="correction-btn fake-correction">
+              <i class="fas fa-times"></i> Should be FAKE
+            </button>
+          </div>
+          <textarea id="feedbackComment" placeholder="Optional: Add comments to help improve..." class="feedback-comment"></textarea>
+        </div>
+
+        <div id="feedbackMessage" class="feedback-message"></div>
+      </div>
+
+    </div>
+
+    {% else %}
+    <div class="ready-box">
+      <i class="fas fa-shield-alt"></i>
+      <p>Ready to Analyze</p>
+      <small>Enter a news article to check its authenticity.</small>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  // Set confidence bar width on page load
+  document.addEventListener("DOMContentLoaded", () => {
+    const fillBar = document.querySelector(".confidence-bar .fill");
+    if (fillBar) {
+      const width = fillBar.getAttribute("data-width");
+      if (width) {
+        fillBar.style.width = width + "%";
+      }
+    }
+  });
+
+  function showCorrectionOptions() {
+    const correctionOptions = document.getElementById('correctionOptions');
+    if (correctionOptions) {
+      correctionOptions.style.display = 'block';
+    }
+  }
+
+  function provideFeedback(userCorrection) {
+    const comment = document.getElementById('feedbackComment') ? document.getElementById('feedbackComment').value : '';
+    const feedbackMessage = document.getElementById('feedbackMessage');
+    
+    // Show loading state
+    if (feedbackMessage) {
+      feedbackMessage.innerHTML = `
+        <div class="loading-message">
+          <i class="fas fa-spinner fa-spin"></i>
+          Submitting feedback...
+        </div>
+      `;
+    }
+
+    // Create form data - ANALYSIS_ID ADDED HERE
+    const formData = new FormData();
+    formData.append('analysis_id', '{{ analysis_id }}');  
+    formData.append('user_correction', userCorrection);
+    formData.append('comment', comment);
+
+    fetch('/provide_feedback', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (feedbackMessage) {
+        if (data.status === 'success') {
+          feedbackMessage.innerHTML = `
+            <div class="success-message">
+              <i class="fas fa-check-circle"></i>
+              <div>
+                <strong>${data.message}</strong>
+                <br>
+                <small>Total feedback collected: ${data.feedback_count}</small>
+              </div>
+            </div>
+          `;
+          
+          // Hide correction options after successful submission
+          const correctionOptions = document.getElementById('correctionOptions');
+          if (correctionOptions) {
+            correctionOptions.style.display = 'none';
+          }
+          
+          // Clear comment field
+          const commentElement = document.getElementById('feedbackComment');
+          if (commentElement) {
+            commentElement.value = '';
+          }
+          
+        } else {
+          feedbackMessage.innerHTML = `
+            <div class="error-message">
+              <i class="fas fa-exclamation-triangle"></i>
+              Error: ${data.message}
+            </div>
+          `;
+        }
+      }
+    })
+    .catch(error => {
+      if (feedbackMessage) {
+        feedbackMessage.innerHTML = `
+          <div class="error-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            Network error: Please try again
+          </div>
+        `;
+      }
+      console.error('Feedback error:', error);
+    });
+  }
+</script>
+
+{% endblock %}

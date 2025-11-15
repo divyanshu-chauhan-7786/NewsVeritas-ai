@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h1>Analysis History</h1>
+  <p>Review all previously analyzed news articles.</p>
+</div>
+
+<div class="history-container">
+  {% if message %}
+  <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #28a745;">
+    <i class="fas fa-check-circle"></i> {{ message }}
+  </div>
+  {% endif %}
+  
+  <input type="text" placeholder="Search by headline or content..." id="searchHistory">
+  
+  {% if history %}
+    <button class="clear-history-btn" onclick="clearHistory()">
+      <i class="fas fa-trash"></i> Clear History
+    </button>
+  {% endif %}
+  
+  <div class="history-list" id="historyList">
+    {% if history %}
+      {% for item in history %}
+      <div class="history-item {{ item.prediction|lower }}" data-headline="{{ item.headline|lower }}" data-content="{{ item.text|lower }}">
+        <div class="history-header">
+          <span class="history-headline">{{ item.headline }}</span>
+          <span class="history-prediction {{ item.prediction|lower }}">
+            {% if item.prediction == 'FAKE' %}
+              <i class="fas fa-times-circle"></i> Fake
+            {% else %}
+              <i class="fas fa-check-circle"></i> Real
+            {% endif %}
+          </span>
+        </div>
+        <div class="history-preview">{{ item.text }}</div>
+        <div class="history-meta">
+          <span>Confidence: {{ item.confidence }}%</span>
+          <span>{{ item.timestamp }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="empty">No analyses yet. Start analyzing to see history here.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function clearHistory() {
+    if (confirm('Are you sure you want to clear all history?')) {
+        window.location.href = '/clear_history';
+    }
+}
+
+// Search functionality
+document.getElementById('searchHistory').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const historyItems = document.querySelectorAll('.history-item');
+    
+    historyItems.forEach(item => {
+        const headline = item.getAttribute('data-headline');
+        const content = item.getAttribute('data-content');
+        
+        if (headline.includes(searchTerm) || content.includes(searchTerm)) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}
