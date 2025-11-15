@@ -181,7 +181,6 @@ AI & Machine Learning Engineer | Python Developer
 **divyanshuchauhan471@gmail.com**
 
 ### 🔗 **Connect with Me**
-- **LinkedIn:** https://www.linkedin.com/in/divyanshu-chauhan  
 - **GitHub:** https://github.com/divyanshu-chauhan-7786
 - **HuggingFace:**  [https://github.com/divyanshu-chauhan-7786](https://huggingface.co/divyanshu-chauhan-7786/fake-news-roberta)
 
